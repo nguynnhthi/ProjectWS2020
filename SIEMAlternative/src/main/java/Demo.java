@@ -30,8 +30,8 @@ public class Demo {
         epService = EPServiceProviderManager.getDefaultProvider(config);
         failedLogMessageStatement = epService.getEPAdministrator().createEPL(failedLogMessageSubscriber.getStatement());
         failedLogMessageStatement.setSubscriber(failedLogMessageSubscriber);
-        // alertStatement = epService.getEPAdministrator().createEPL(alertSubscriber.getStatement());
-        // alertStatement.setSubscriber(alertSubscriber);
+        alertStatement = epService.getEPAdministrator().createEPL(alertSubscriber.getStatement());
+        alertStatement.setSubscriber(alertSubscriber);
 
         /*EPRuntime runtime = EPRuntimeProvider.getDefaultRuntime(config);
         CompilerArguments arguments = new CompilerArguments(config);
