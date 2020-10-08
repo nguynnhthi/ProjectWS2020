@@ -3,11 +3,12 @@ import java.time.Instant;
 import java.util.Date;
 
 public class SSHLoginMessage {
-    public String ipAddress;
-    public String timestamp;
-    public String message;
-    public long rtTimestamp;
-    public int portNumber;
+    private String ipAddress;
+    private final String timestamp;
+    private final String message;
+    private final long rtTimestamp;
+    private int portNumber;
+
     public String getTimestamp() {
         return timestamp;
     }
@@ -38,7 +39,7 @@ public class SSHLoginMessage {
                 this.ipAddress = splitMessage[i + 1];
             }
             else if (splitMessage[i].equals("port")) {
-                this.portNumber = Integer.valueOf(splitMessage[i + 1]);
+                this.portNumber = Integer.parseInt(splitMessage[i + 1]);
                 break;
             }
         }

@@ -3,11 +3,12 @@ import java.time.Instant;
 import java.util.Date;
 
 public class SSHAlert {
-    public String timestamp;
-    public String message;
-    public long rtTimestamp;
-    public String ipAddress;
-    public int portNumber;
+    private final String timestamp;
+    private final String message;
+    private final long rtTimestamp;
+    private final String ipAddress;
+    private final int portNumber;
+
     public String getIpAddress() {
         return ipAddress;
     }
@@ -23,6 +24,7 @@ public class SSHAlert {
     public long getRtTimestamp() {
         return rtTimestamp;
     }
+
     public SSHAlert(long rtTimestamp, String ipAddress, int portNumber) {
         this.ipAddress = ipAddress;
         this.portNumber = portNumber;

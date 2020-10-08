@@ -12,7 +12,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class Demo {
-    public static void main(String[] args) throws IOException, NullPointerException {
+    public static void main(String[] args) throws NullPointerException {
+        // Initialisation
         EPCompiler epc = new EPCompilerImpl();
         Configuration configuration = new Configuration();
         configuration.getCommon().addEventType(SSHLogMessage.class);
@@ -22,6 +23,7 @@ public class Demo {
         EPCompiled epCompiled;
         EPDeployment deployment;
 
+        // EPL statement to extract login attempts
         try {
             epCompiled = epc.compile("@name('failed-login-statement') select * from SSHLogMessage (message " +
                     "like \"%password for%\")", arg);
@@ -38,13 +40,13 @@ public class Demo {
         EPStatement statement = runtime.getDeploymentService().getStatement(deployment.getDeploymentId(),
                 "failed-login-statement");
         statement.addListener((newData, oldData, statement1, runtime1) -> {
-            String SYSLOG_TIMESTAMP = (String) newData[0].get("timestamp");
             String MESSAGE = (String) newData[0].get("message");
             long RTTIMESTAMP = (Long) newData[0].get("rtTimestamp");
             SSHLoginMessage lim = new SSHLoginMessage(MESSAGE, RTTIMESTAMP);
-            // System.out.println(String.format("TIMESTAMP: %s, MESSAGE: %s", SYSLOG_TIMESTAMP, MESSAGE));
             runtime.getEventService().sendEventBean(lim, "SSHLoginMessage");
         });
+
+        // EPL statement to extract the consecutive failed attempts
         String alertExpression = "@name('alert-statement') select * from SSHLoginMessage "
                 + "match_recognize ( "
                 + "measures A as event1, B as event2, C as event3 "
@@ -74,6 +76,8 @@ public class Demo {
             SSHAlert sa = new SSHAlert(RTTIMESTAMP, IPADDRESS, PORTNUMBER);
             runtime.getEventService().sendEventBean(sa, "SSHAlert");
         });
+
+        // Statements to add raw events in real-time
         int numberOfLines = 0;
         while (true) {
             ProcessBuilder processBuilder = new ProcessBuilder();
@@ -81,7 +85,7 @@ public class Demo {
             try {
                 Process process = processBuilder.start();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String lineOfJSON = null;
+                String lineOfJSON;
                 ArrayList<String> jsonList = new ArrayList<>();
                 while((lineOfJSON = reader.readLine()) != null) jsonList.add(lineOfJSON);
                 int updatedNumberOfLines = jsonList.size();
