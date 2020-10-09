@@ -33,9 +33,9 @@ public class SSHAlert {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date = Date.from(Instant.ofEpochMilli(epochTimestamp));
         this.timestamp = sdf.format(date);
-        this.message = "ALERT :\t\t" + this.getTimestamp() + "\tThree consecutive unsuccessful log-in " +
+        this.message = "ALERT :\t\t" + "Three consecutive unsuccessful log-in " +
                 "attempts from " + this.ipAddress + " port " + this.portNumber + " detected at " +
-                this.timestamp + "\n";
+                this.getTimestamp() + "\n";
         System.out.println(this.getMessage());
     }
 }
